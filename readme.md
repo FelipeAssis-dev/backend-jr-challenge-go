@@ -5,9 +5,6 @@ Um serviço em **Go** construído com **Uber Fx**, **pgx/v5** e **PostgreSQL**, 
 
 A aplicação elimina a utilização de ponto flutuante (`float`), assegura a integridade de um livro-razão (*ledger append-only*) e protege o saldo de jogadores contra *race conditions* e *lost updates* através de bloqueios transacionais no PostgreSQL (`SELECT ... FOR UPDATE`).
 
-* Enunciado do desafio: [README.md original / CHALLENGE.md](https://www.google.com/search?q=docs/CHALLENGE.md)
-* Decisões de design, modelo de concorrência e arquitetura futura: [ARCHITECTURE.md](https://www.google.com/search?q=ARCHITECTURE.md)
-
 ```
                      ┌────────────────────────┐
                      │      Cliente HTTP      │
@@ -329,5 +326,3 @@ O desenvolvimento focou-se na **integridade matemática, consistência contabil�
 * **Reversões Fora de Ordem (`PENDING_REFERENCE`)**: Modelação da máquina de estados com retries e workers assíncronos.
 
 
-
-Consulte o ficheiro [ARCHITECTURE.md](https://www.google.com/search?q=ARCHITECTURE.md) para a análise aprofundada de cada decisão.
