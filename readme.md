@@ -5,40 +5,47 @@ Um serviço em **Go** construído com **Uber Fx**, **pgx/v5** e **PostgreSQL**, 
 
 A aplicação elimina a utilização de ponto flutuante (`float`), assegura a integridade de um livro-razão (*ledger append-only*) e protege o saldo de jogadores contra *race conditions* e *lost updates* através de bloqueios transacionais no PostgreSQL (`SELECT ... FOR UPDATE`).
 
+- Decisões de design, modelo de concorrência e arquitetura futura: [ARCHITECTURE.md](./ARCHITECTURE.md)
+
+
 ```
-                     ┌────────────────────────┐
-                     │      Cliente HTTP      │
-                     └───────────┬────────────┘
-                                 │ HTTP (JSON)
-                                 ▼
-                     ┌────────────────────────┐
-                     │     Uber Fx App        │
-                     │  (Ciclo de Vida/HTTP)  │
-                     └───────────┬────────────┘
-                                 │ pgxpool (Transação SQL atómica)
-                                 ▼
-         ┌──────────────────────────────────────────────────┐
-         │             PostgreSQL 16 (Contentor)            │
-         │  - wallets (SELECT ... FOR UPDATE)               │
-         │  - wager_transactions (Idempotência / Status)    │
-         │  - wallet_ledger (Append-only / Imutável)        │
-         └──────────────────────────────────────────────────┘
+
+```
+                 ┌────────────────────────┐
+                 │      Cliente HTTP      │
+                 └───────────┬────────────┘
+                             │ HTTP (JSON)
+                             ▼
+                 ┌────────────────────────┐
+                 │     Uber Fx App        │
+                 │  (Ciclo de Vida/HTTP)  │
+                 └───────────┬────────────┘
+                             │ pgxpool (Transação SQL atómica)
+                             ▼
+     ┌──────────────────────────────────────────────────┐
+     │             PostgreSQL 16 (Contentor)            │
+     │  - wallets (SELECT ... FOR UPDATE)               │
+     │  - wager_transactions (Idempotência / Status)    │
+     │  - wallet_ledger (Append-only / Imutável)        │
+     └──────────────────────────────────────────────────┘
+
+```
 
 ```
 
 ## Índice
 
-1. [Visão Geral e Destaques](https://www.google.com/search?q=%231-vis%C3%A3o-geral-e-destaques)
-2. [Pré-requisitos](https://www.google.com/search?q=%232-pr%C3%A9-requisitos)
-3. [Início Rápido](https://www.google.com/search?q=%233-in%C3%ADcio-r%C3%A1pido)
-4. [Variáveis de Ambiente](https://www.google.com/search?q=%234-vari%C3%A1veis-de-ambiente)
-5. [Migrações e Base de Dados](https://www.google.com/search?q=%235-migra%C3%A7%C3%B5es-e-base-de-dados)
-6. [Executar a Aplicação](https://www.google.com/search?q=%236-executar-a-aplica%C3%A7%C3%A3o)
-7. [API HTTP e Exemplos](https://www.google.com/search?q=%237-api-http-e-exemplos)
-8. [Auditoria e Reconciliação](https://www.google.com/search?q=%238-auditoria-e-reconcilia%C3%A7%C3%A3o)
-9. [Testes](https://www.google.com/search?q=%239-testes)
-10. [Estrutura do Projeto](https://www.google.com/search?q=%2310-estrutura-do-projeto)
-11. [Decisões de Escopo e Arquitetura Futura](https://www.google.com/search?q=%2311-decis%C3%B5es-de-escopo-e-arquitetura-futura)
+- [Visão Geral e Destaques](#1-visão-geral-e-destaques)
+- [Pré-requisitos](#2-pré-requisitos)
+- [Início Rápido](#3-início-rápido)
+- [Variáveis de Ambiente](#4-variáveis-de-ambiente)
+- [Migrações e Base de Dados](#5-migrações-e-base-de-dados)
+- [Executar a Aplicação](#6-executar-a-aplicação)
+- [API HTTP e Exemplos](#7-api-http-e-exemplos)
+- [Auditoria e Reconciliação](#8-auditoria-e-reconciliação)
+- [Testes](#9-testes)
+- [Estrutura do Projeto](#10-estrutura-do-projeto)
+- [Decisões de Escopo e Arquitetura Futura](#11-decisões-de-escopo-e-arquitetura-futura)
 
 ---
 
@@ -60,7 +67,6 @@ A aplicação elimina a utilização de ponto flutuante (`float`), assegura a in
 | cURL / PowerShell / Postman | Qualquer | Execução de pedidos HTTP nos endpoints |
 
 Portas utilizadas:
-
 * `5432`: PostgreSQL
 * `8080`: Servidor HTTP da API
 
@@ -116,7 +122,7 @@ A aplicação aceita configuração por variáveis de ambiente com valor padrão
 
 ## 5. Migrações e Base de Dados
 
-O esquema relacional encontra-se versionado em `migrations/001_init.sql`:
+
 
 | Tabela | Responsabilidade e Restrições |
 | --- | --- |
@@ -324,5 +330,4 @@ O desenvolvimento focou-se na **integridade matemática, consistência contabil�
 * **Consumo SQS FIFO e DLQ**: Estruturado concetualmente no `ARCHITECTURE.md` através dos padrões Transactional Inbox/Outbox.
 * **Autenticação OIDC/Keycloak**: Desenho do fluxo `client_credentials` com validação de tokens JWT/JWKS em middleware HTTP.
 * **Reversões Fora de Ordem (`PENDING_REFERENCE`)**: Modelação da máquina de estados com retries e workers assíncronos.
-
 
