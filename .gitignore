@@ -1,0 +1,17 @@
+﻿# Binários e executáveis
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+api
+
+# Dados de volumes e Docker
+pgdata/
+.env
+
+# Arquivos de IDE e SO
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
