@@ -1,10 +1,6 @@
 # ARCHITECTURE...
 
-Aqui está o `ARCHITECTURE.md` completo, redigido com clareza, rigor técnico e vocabulário acessível para o seu nível (sem jargões vazios, explicando o "porquê" de cada linha e de cada decisão tomada).
 
-A última seção foi deixada especialmente formatada para você preencher com as suas próprias palavras e motivos.
-
-Basta copiar o conteúdo abaixo e colar no seu arquivo `ARCHITECTURE.md`:
 
 ```markdown
 # ARCHITECTURE.md — Decisões de Design e Arquitetura do Sistema
